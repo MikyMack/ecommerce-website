@@ -1,0 +1,68 @@
+<!-- views/edit-product.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <meta name="author" content="Disni Trophies">
+    <meta name="description" content="Disni Trophies">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicons/favicon-16x16.png">
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9;">
+    <div style="max-width: 800px; margin: 50px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h1 style="text-align: center; color: #333;">Edit Product</h1>
+        <form action="/admin-dashboard/update/<%= product._id %>" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+            <div style="margin-bottom: 15px;">
+                <label for="name" style="display: block; margin-bottom: 5px; color: #555;">Product Name:</label>
+                <input type="text" name="name" value="<%= product.name %>" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="category" style="display: block; margin-bottom: 5px; color: #555;">Category:</label>
+                <select name="category" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="premium models">Premium Models</option>
+                    <option value="wooden trophies">Wooden Trophies</option>
+                    <option value="medal models">Medal Models</option>
+                    <option value="award trophies">Award Trophies</option>
+                    <option value="championship trophies">Championship Trophies</option>
+                    <option value="gift items">Gift Items</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="price" style="display: block; margin-bottom: 5px; color: #555;">Price:</label>
+                <input type="number" name="price" value="<%= product.price %>" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="description" style="display: block; margin-bottom: 5px; color: #555;">Description:</label>
+                <textarea name="description" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; height: 100px;"><%= product.description %></textarea>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="height" style="display: block; margin-bottom: 5px; color: #555;">Height:</label>
+                <input type="number" name="height" value="<%= product.height %>" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="thickness" style="display: block; margin-bottom: 5px; color: #555;">Thickness:</label>
+                <input type="number" name="thickness" value="<%= product.thickness %>" required style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="imageUrl" style="display: block; margin-bottom: 5px; color: #555;">Image URL (Upload Image):</label>
+                <input type="file" name="imageUrl" accept="image/*" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+
+            <button type="submit" style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%;">Update Product</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/admin-dashboard" style="color: #007BFF; text-decoration: none;">Back to Admin Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
