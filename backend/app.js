@@ -32,13 +32,13 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log("MongoDB connected successfully");
-    })
-    .catch((err) => {
-        console.error("Error connecting to MongoDB:", err);
-    });
+// mongoose.connect(process.env.MONGO_URI)
+//     .then(() => {
+//         console.log("MongoDB connected successfully");
+//     })
+//     .catch((err) => {
+//         console.error("Error connecting to MongoDB:", err);
+//     });
 
 
 app.use(
@@ -55,7 +55,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 
 // Routes for Rendering Views
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { 
     res.render('index', { title: 'Home' });
 });
 
