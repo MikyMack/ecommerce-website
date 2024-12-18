@@ -13447,3 +13447,48 @@ span.select2-selection.select2-selection--single:focus {
         padding-top: 0
     }
 }
+
+.bannertext {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 60px; 
+    text-transform: uppercase;
+}
+
+@media (max-width: 1200px) {
+    .bannertext {
+        font-size: 50px;
+    }
+}
+
+@media (max-width: 992px) {
+    .bannertext {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .bannertext {
+        font-size: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .bannertext {
+        font-size: 30px;
+    }
+}
+
+.styled-text {
+    color: white;
+    -webkit-text-stroke: 2px rgba(250, 212, 0, 0.5);
+    text-stroke: 2px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .styled-text {
+        -webkit-text-stroke: 1px rgba(250, 212, 0, 0.5);
+        text-stroke: 1px rgba(0, 0, 0, 0.5);
+    }
+}
