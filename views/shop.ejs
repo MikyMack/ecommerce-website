@@ -217,25 +217,35 @@
                                 <h3 class="widget_title">Category</h3>
                                 <div class="category-filter">
                                     <ul id="category-filters">
-                                        <li><input type="checkbox" id="premium" name="category" value="premium models">
-                                            <label for="premium">Premium Models</label> <span class="total">05</span>
+                                        <li data-category="premium models"><input type="checkbox" id="premium" name="category" value="premium models">
+                                            <label for="premium">Premium Models</label> <span class="total">0</span>
                                         </li>
-                                        <li><input type="checkbox" id="wooden" name="category" value="wooden trophies">
-                                            <label for="wooden">Wooden Trophies</label> <span class="total">08</span>
+                                        <li data-category="wooden trophies"><input type="checkbox" id="wooden" name="category" value="wooden trophies">
+                                            <label for="wooden">Wooden Trophies</label> <span class="total">0</span>
                                         </li>
-                                        <li><input type="checkbox" id="medal" name="category" value="medal models">
-                                            <label for="medal">Medal Models</label> <span class="total">14</span></li>
-                                        <li><input type="checkbox" id="award" name="category" value="award trophies">
-                                            <label for="award">Award Trophies</label> <span class="total">14</span></li>
-                                        <li><input type="checkbox" id="championship" name="category"
-                                                value="championship trophies"> <label for="championship">Championship
-                                                Trophies</label> <span class="total">14</span></li>
-                                        <li>
+                                        <li data-category="medal models"><input type="checkbox" id="medal" name="category" value="medal models">
+                                            <label for="medal">Medal Models</label> <span class="total">0</span></li>
+                                        <li data-category="award trophies"><input type="checkbox" id="award" name="category" value="award trophies">
+                                            <label for="award">Award Trophies</label> <span class="total">0</span></li>
+                                        <li data-category="championship trophies"><input type="checkbox" id="championship" name="category" value="championship trophies">
+                                            <label for="championship">Championship Trophies</label> <span class="total">0</span></li>
+                                        <li data-category="gift items">
                                             <input type="checkbox" id="gift" name="category" value="gift items">
                                             <label for="gift">Gift Items</label>
-                                            <span class="total">14</span>
+                                            <span class="total">0</span>
+                                        </li>
+                                        <li data-category="glass momentos">
+                                            <input type="checkbox" id="momentos" name="category" value="glass momentos">
+                                            <label for="momentos">Glass momentos</label>
+                                            <span class="total">0</span>
+                                        </li>
+                                        <li data-category="wooden momentos">
+                                            <input type="checkbox" id="momentos1" name="category" value="wooden momentos">
+                                            <label for="momentos1">Wooden momentos</label>
+                                            <span class="total">0</span>
                                         </li>
                                     </ul>
+                                    
                                 </div>
                             </div>
                         </aside>
@@ -387,37 +397,46 @@
     ============================== -->
     <!-- Jquery -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const categoryFilters = document.getElementById('category-filters');
-            const productList = document.getElementById('product-list');
-            const productCount = document.getElementById('product-count');
-            const orderby = document.getElementById('orderby');
-            const pagination = document.getElementById('pagination');
+       document.addEventListener("DOMContentLoaded", function () {
+    const categoryFilters = document.getElementById('category-filters');
+    const productList = document.getElementById('product-list');
+    const productCount = document.getElementById('product-count');
+    const orderby = document.getElementById('orderby');
+    const pagination = document.getElementById('pagination');
 
-            let currentPage = 1;
-            const productsPerPage = 9;
-            let selectedCategories = [];
+    let currentPage = 1;
+    const productsPerPage = 9;
+    let selectedCategories = [];
 
-            const fetchProducts = (categories = [], sort = 'price', page = 1) => {
-                const categoryQuery = categories.join(',');
-                fetch(`/shop-products?category=${categoryQuery}&sort=${sort}&page=${page}&limit=${productsPerPage}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (Array.isArray(data.products)) {
-                            displayProducts(data.products);
-                        } else {
-                            console.error('Invalid products data:', data.products);
-                        }
-                        updateProductCount(data.total);
-                        setupPagination(data.pages);
-                    })
-                    .catch(error => console.error('Error fetching products:', error));
-            };
+    const fetchProducts = (categories = [], sort = 'price', page = 1) => {
+        const categoryQuery = categories.join(',');
+        fetch(`/shop-products?category=${categoryQuery}&sort=${sort}&page=${page}&limit=${productsPerPage}`)
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data.products)) {
+                    displayProducts(data.products);
+                } else {
+                    console.error('Invalid products data:', data.products);
+                }
+                updateProductCount(data.total);
+                setupPagination(data.pages);
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    };
 
-            const displayProducts = (products) => {
-                productList.innerHTML = '';
-                products.forEach(product => {
-                    productList.innerHTML += `
+    const fetchCategoryCounts = () => {
+        fetch('/shop-products/counts')
+            .then(response => response.json())
+            .then(data => {
+                updateCategoryCounts(data.counts);
+            })
+            .catch(error => console.error('Error fetching category counts:', error));
+    };
+
+    const displayProducts = (products) => {
+        productList.innerHTML = '';
+        products.forEach(product => {
+            productList.innerHTML += `
                 <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="product-style2 version3">
                         <div class="product-img">
@@ -434,44 +453,55 @@
                         </span>
                     </div>
                 </div>`;
-                });
-            };
-
-            const updateProductCount = (count) => {
-                productCount.textContent = count;
-            };
-
-            const setupPagination = (totalPages) => {
-                pagination.innerHTML = '';
-                for (let i = 1; i <= totalPages; i++) {
-                    pagination.innerHTML += `<a href="#" class="pagi-btn" data-page="${i}">${i}</a>`;
-                }
-            };
-
-            orderby.addEventListener('change', (event) => {
-                const sort = event.target.value;
-                fetchProducts(selectedCategories, sort, currentPage);
-            });
-
-            pagination.addEventListener('click', (event) => {
-                if (event.target.classList.contains('pagi-btn')) {
-                    event.preventDefault();
-                    currentPage = parseInt(event.target.dataset.page, 10);
-                    fetchProducts(selectedCategories, orderby.value, currentPage);
-                }
-            });
-
-            categoryFilters.addEventListener('change', (event) => {
-                if (event.target.name === 'category') {
-                    selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
-                        .map(checkbox => checkbox.value);
-                    fetchProducts(selectedCategories, orderby.value, currentPage);
-                }
-            });
-
-            // Initial fetch
-            fetchProducts();
         });
+    };
+
+    const updateProductCount = (count) => {
+        productCount.textContent = count;
+    };
+
+    const updateCategoryCounts = (counts) => {
+        const categories = categoryFilters.querySelectorAll('li');
+        categories.forEach(category => {
+            const categoryName = category.dataset.category;
+            const count = counts[categoryName] || 0;
+            category.querySelector('.total').textContent = count;
+        });
+    };
+
+    const setupPagination = (totalPages) => {
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            pagination.innerHTML += `<a href="#" class="pagi-btn" data-page="${i}">${i}</a>`;
+        }
+    };
+
+    orderby.addEventListener('change', (event) => {
+        const sort = event.target.value;
+        fetchProducts(selectedCategories, sort, currentPage);
+    });
+
+    pagination.addEventListener('click', (event) => {
+        if (event.target.classList.contains('pagi-btn')) {
+            event.preventDefault();
+            currentPage = parseInt(event.target.dataset.page, 10);
+            fetchProducts(selectedCategories, orderby.value, currentPage);
+        }
+    });
+
+    categoryFilters.addEventListener('change', (event) => {
+        if (event.target.name === 'category') {
+            selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+                .map(checkbox => checkbox.value);
+            fetchProducts(selectedCategories, orderby.value, currentPage);
+        }
+    });
+
+    // Initial fetch
+    fetchProducts();
+    fetchCategoryCounts();
+});
+
     </script>
 <script>
     function buyNow(name, price, description, category, height, thickness) {

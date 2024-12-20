@@ -119,8 +119,11 @@ app.get('/admin-dashboard', authMiddleware, async (req, res) => {
 });
 
 app.post('/admin-dashboard/add', upload.single('imageUrl'), async (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).send(req.fileValidationError);
+    }
     const { name, category, price, description, height, thickness } = req.body;
-    const imageUrl = req.file ? req.file.path : ''; 
+    const imageUrl = req.file ? req.file.path : '';
 
     // Create the new product
     const newProduct = new Product({
@@ -130,17 +133,28 @@ app.post('/admin-dashboard/add', upload.single('imageUrl'), async (req, res) => 
         description,
         height,
         thickness,
-        imageUrl, 
-        isListed: true, 
+        imageUrl,
+        isListed: true,
     });
 
     try {
-        await newProduct.save(); 
-        res.redirect('/admin-dashboard'); 
+        await newProduct.save();
+        res.redirect('/admin-dashboard');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error adding product');
     }
+});
+
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(413).send('File size exceeds the limit of 5 MB');
+        }
+    } else if (err.message === 'Only image files are allowed!') {
+        return res.status(400).send('Only image files are allowed!');
+    }
+    next(err);
 });
 app.get('/admin-dashboard/edit/:id', authMiddleware, async (req, res) => {
     try {
